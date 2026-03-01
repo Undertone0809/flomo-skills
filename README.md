@@ -7,7 +7,7 @@
 复制这一句话给任意 Agent（Codex / Claude Code / 其他）即可安装：
 
 ```text
-请从 https://github.com/<your-name>/flomo-web-crud-skill 安装并启用 flomo-web-crud-skill，自动完成所需依赖与配置（包含 hangwin/mcp-chrome 与 chrome-mcp-server），执行最小可用验证（get_windows_and_tabs、chrome_navigate、chrome_read_page），然后把安装路径、配置文件路径和验证结果报告给我。
+请从 https://github.com/Undertone0809/flomo-crud-skill 安装并启用 flomo-web-crud，自动完成所需依赖与配置（包含 hangwin/mcp-chrome 与 chrome-mcp-server），执行最小可用验证（get_windows_and_tabs、chrome_navigate、chrome_read_page），然后把安装路径、配置文件路径和验证结果报告给我。
 ```
 
 ## What
@@ -76,10 +76,15 @@ args = ["-y", "-p", "mcp-chrome-bridge", "mcp-chrome-stdio"]
 
 ---
 
+也可以直接用 Skills CLI 安装：
+
+```bash
+npx skills add Undertone0809/flomo-crud-skill --skill flomo-web-crud
+```
+
 更多细节见：
 
 - `SKILL.md`
 - `references/safety.md`
 - `references/ui-locators.md`
 - `references/workflows.md`
-
