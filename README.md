@@ -2,140 +2,152 @@
 
 Production-ready flomo skills for agent workflows.
 
-这个仓库提供 3 个可独立安装的 flomo agent skills，分别覆盖：
+这个仓库提供 3 个可独立安装的 flomo agent skills。
 
-- `mac` 上更快的本地登录态 + API 工作流
-- Windows / 非 `mac` 上的 Web UI 自动化工作流
-- 面向 AI / NotebookLM 的 Markdown 导出工作流
+**一句话选技能：**
+- **Mac 用户** → 装 `flomo-local-api`（功能最全，体验最好）
+- **Windows 用户** → 装 `flomo-web-crud`（通过浏览器操作）
+- **需要导出 Markdown** → 装 `flomo-memo-to-markdown`
 
-它不是一个“大而全”的 flomo 框架，而是一个清晰的技能仓库。根 README 是唯一入口，不再把说明拆散到多个子 README 里。
+---
 
-## What is inside
+## Quick Start
 
-| Skill | 主要用途 | 适合谁 |
-| --- | --- | --- |
-| `flomo-local-api` | 查询、总结、创建、编辑、tag 复用 | `mac` 用户 |
-| `flomo-web-crud` | 通过浏览器做 live flomo CRUD | Windows / 非 `mac` 用户 |
-| `flomo-memo-to-markdown` | 导出 Markdown、tag 统计、NotebookLM 素材 | 需要归档或 AI 消费的用户 |
-
-## The important routing rule
-
-`flomo-web-crud` 能做的事，`flomo-local-api` 在 `mac` 上基本都能做。
-
-区别不在“功能能不能做”，而在“用哪条路径更合理”：
-
-- 对 `mac` 用户，默认只需要安装 `flomo-local-api`
-- 对 Windows 或其他非 `mac` 用户，默认安装 `flomo-web-crud`
-- 对导出场景，无论平台，直接用 `flomo-memo-to-markdown`
-
-换句话说：
-
-- `flomo-local-api` 是 `mac` 用户的默认主力技能
-- `flomo-web-crud` 主要是给 Windows 用户和浏览器场景准备的
-- `flomo-memo-to-markdown` 是独立导出技能，不是 CRUD 附属能力
-
-## Why `flomo-local-api` is better on mac
-
-如果你在 `mac` 上，优先用 `flomo-local-api`。原因很实际：
-
-1. 更快  
-   走本地登录态 + API，不需要打开 flomo Web 页面，不需要浏览器自动化。
-
-2. 更稳  
-   不依赖 UI 结构，不会因为按钮位置、弹窗状态或页面布局变化而变脆。
-
-3. 更适合高频使用  
-   查 memo、总结最近想法、快速写一条 memo，这些日常动作都比 Web 自动化顺手很多。
-
-4. 写 memo 时会复用你现有的 tag 体系  
-   这是 `flomo-local-api` 很重要的优点。它会先扫描你已有的 tag，再优先复用成熟 tag，而不是随手新造一堆新标签。长期用下来，检索质量会明显更好。
-
-## Typical cases
-
-| 真实场景 | 推荐 skill | 为什么 |
-| --- | --- | --- |
-| “帮我看看最近 30 天我在反复写什么” | `flomo-local-api` | 这是标准查询 + 总结场景，`mac` 上没必要走 Web UI |
-| “我想快速记一条 memo，并尽量沿用我已有的 tag” | `flomo-local-api` | 它会先看已有 tag，再写入，更适合长期维护 tag 体系 |
-| “我在 Windows 上，想查几条 memo 再改掉其中一条” | `flomo-web-crud` | 非 `mac` 默认走浏览器路径 |
-| “我想删掉一条 flomo memo” | `flomo-web-crud` | 删除是 live account 操作，Web UI 路径更自然 |
-| “导出 2025 年 memo，按季度拆分，喂给 NotebookLM” | `flomo-memo-to-markdown` | 这是独立导出场景，不该混进 CRUD skill |
-| “我想把 flomo 当成长周期知识输入源喂给 AI” | `flomo-memo-to-markdown` | 重点是 Markdown 切分和 tag 统计，不是交互式查改 |
-
-## Installation
-
-### mac 用户
-
-大多数情况下，你只需要安装 `flomo-local-api`：
+### Mac 用户（推荐）
 
 ```bash
 npx skills add Undertone0809/flomo-skills --skill flomo-local-api
 ```
 
-如果你还需要导出 Markdown，再额外安装：
+Mac 用户只需要这一个技能就够了。它覆盖了查询、创建、编辑、总结等所有常用操作，而且比 Web 自动化更快更稳。
 
-```bash
-npx skills add Undertone0809/flomo-skills --skill flomo-memo-to-markdown
-```
-
-### Windows / 非 mac 用户
-
-默认安装 `flomo-web-crud`：
+### Windows 用户
 
 ```bash
 npx skills add Undertone0809/flomo-skills --skill flomo-web-crud
 ```
 
-## Skill details
+Windows 上通过 Chrome MCP 操作浏览器完成 CRUD。
 
-### `flomo-local-api`
+### 需要导出 Markdown？
 
-- 面向 `mac`
-- 依赖本地 flomo 登录态
-- 负责查询、总结、创建、编辑、tag 复用
-- 写 memo 时优先复用你现有的 tag
-- 不负责删除 memo
+无论哪个平台，导出功能都是独立的：
 
-入口：
-- [SKILL.md](./.agents/flomo-local-api/SKILL.md)
+```bash
+npx skills add Undertone0809/flomo-skills --skill flomo-memo-to-markdown
+```
 
-### `flomo-web-crud`
+---
 
-- 面向任意平台，主要给 Windows / 非 `mac` 用户使用
-- 不依赖 flomo 官方 API
-- 依赖 Chrome MCP 和已登录浏览器
-- 可以做 live Web UI 的 query / create / edit / delete
-- 在 `mac` 上不是默认入口，只在本地 API 不可用或必须走浏览器时使用
+## 功能对比
 
-入口：
-- [SKILL.md](./.agents/flomo-web-crud/SKILL.md)
+| 功能 | `flomo-local-api` (Mac) | `flomo-web-crud` (Windows) |
+|------|------------------------|---------------------------|
+| 查询 memo | ✅ | ✅ |
+| 创建 memo | ✅ 智能复用已有 tag | ✅ |
+| 编辑 memo | ✅ | ✅ |
+| 删除 memo | ❌ | ✅ |
+| 总结/分析 | ✅ | ✅ |
+| tag 统计 | ✅ | ✅ |
+| 速度 | 快（直接 API）| 较慢（浏览器自动化）|
+| 稳定性 | 高（不依赖 UI）| 中（依赖页面元素）|
 
-### `flomo-memo-to-markdown`
+**关键区别：** `flomo-web-crud` 能做的，`flomo-local-api` 在 Mac 上基本都能做，而且做得更好。唯一的例外是”删除 memo”——出于安全考虑，`flomo-local-api` 不提供删除功能。
 
-- 面向导出、归档、NotebookLM、长文本 AI 消费
-- 依赖本地 flomo 登录态和 API 读取能力
-- 负责 Markdown 分片、tag 统计、附件处理
-- 不承接“查找并修改一条 memo”这类交互
+---
 
-入口：
-- [SKILL.md](./.agents/flomo-memo-to-markdown/SKILL.md)
+## 为什么 Mac 用户应该选 `flomo-local-api`
 
-## Repository layout
+### 1. 更快
+
+直接走本地登录态 + 官方 API，不需要打开浏览器、等待页面加载、模拟点击。查一条 memo 是毫秒级响应，不是秒级。
+
+### 2. 更稳
+
+不依赖 DOM 结构，不会因为 flomo 改版、按钮位置调整、弹窗变化而崩溃。API 是稳定的契约，UI 是易变的实现。
+
+### 3. 智能 tag 复用
+
+这是 `flomo-local-api` 的杀手级特性。
+
+当你创建 memo 时，它会先扫描你历史上用过的所有 tag，分析你的标签体系，然后**优先建议已有标签**。而不是像 Web 自动化那样直接写入，导致标签越来越乱。
+
+**长期价值：** 半年后你的 tag 体系依然清晰可检索，不会因为 AI 随手造了一堆 `#思考` `#think` `#thinking` 而失控。
+
+### 4. 更适合高频使用
+
+日常查询、快速记录、总结最近想法——这些高频动作走 API 才是合理的。把浏览器自动化留给真正需要可视化确认的场景（比如删除）。
+
+---
+
+## 使用场景指南
+
+| 你想做什么 | 推荐技能 | 说明 |
+|-----------|---------|------|
+| “帮我看看最近 30 天我在反复写什么” | `flomo-local-api` | 查询 + 总结是 API 的强项 |
+| “快速记一条 memo，沿用我现有的 tag” | `flomo-local-api` | 智能 tag 复用，不乱造新标签 |
+| “删掉某条 memo” | `flomo-web-crud` | 删除操作走浏览器更稳妥 |
+| “把 2025 年 memo 导出给 NotebookLM” | `flomo-memo-to-markdown` | 独立导出技能 |
+| “分析我的 tag 使用情况” | `flomo-local-api` | 自带 tag 统计 |
+
+---
+
+## 技能详情
+
+### `flomo-local-api`（Mac 主力技能）
+
+功能：查询、创建、编辑、总结、tag 分析
+
+特色：
+- 走本地登录态 + API，毫秒级响应
+- **智能 tag 复用**：写入时优先建议已有标签，维护标签体系整洁
+- 不支持删除（出于安全考虑，删除请走 Web UI）
+
+[查看 SKILL.md →](./.agents/flomo-local-api/SKILL.md)
+
+### `flomo-web-crud`（Windows / 浏览器方案）
+
+功能：查询、创建、编辑、**删除**
+
+特色：
+- 通过 Chrome MCP 操作浏览器
+- 不依赖官方 API，任何平台可用
+- 适合 Windows 用户或必须删除 memo 的场景
+
+[查看 SKILL.md →](./.agents/flomo-web-crud/SKILL.md)
+
+### `flomo-memo-to-markdown`（导出专用）
+
+功能：Markdown 导出、tag 统计、附件处理
+
+特色：
+- 按时间范围导出，支持切分大文件
+- 生成 NotebookLM 友好的格式
+- 独立的归档技能，不是 CRUD 附属
+
+[查看 SKILL.md →](./.agents/flomo-memo-to-markdown/SKILL.md)
+
+---
+
+## 仓库结构
 
 ```text
 .agents/
-  flomo-local-api/
-  flomo-web-crud/
-  flomo-memo-to-markdown/
+  flomo-local-api/      # Mac 主力技能
+  flomo-web-crud/       # Windows / 浏览器方案
+  flomo-memo-to-markdown/  # 导出专用
 ```
 
-每个 skill 都自带自己的 `SKILL.md`、配置、脚本和 references。这个仓库故意不做 `shared/`，也不在各 skill 目录下再放重复 README，避免入口分裂。
+每个 skill 自带 `SKILL.md`、配置和脚本。根 README 是唯一入口，避免文档分散。
 
-## Discoverability
+---
 
-可以先用这个命令确认远端仓库能被 `skills` CLI 正常识别：
+## 验证安装
+
+确认仓库能被 `skills` CLI 正常识别：
 
 ```bash
 npx skills add https://github.com/Undertone0809/flomo-skills --list --full-depth
 ```
 
-公开仓库被正常安装后，也会逐步进入 [skills.sh](https://skills.sh/) 的可发现路径。
+公开仓库安装后会逐步进入 [skills.sh](https://skills.sh/) 的可发现路径。
