@@ -1,92 +1,85 @@
-⚠️ Better agent skill for mac [flomo-local-api-skill](https://github.com/Undertone0809/flomo-local-api-skill)
+# flomo-skills
 
-# flomo-crud-skill
+一个面向 Agent Skill 用户的 flomo 技能仓库。
 
-一个面向 Agent Skill 用户的 flomo Web 自动化 Skill。  它通过 Chrome MCP 操作 `https://v.flomoapp.com/mine` 页面，在已登录会话中完成 memo 的 CRUD（查询、创建、编辑、删除）。
+这个仓库不是一个“大一统 flomo 框架”，而是三个边界清楚的独立 skill 集合：
 
-## 一键安装
+- `flomo-local-api`
+- `flomo-web-crud`
+- `flomo-memo-to-markdown`
 
-复制这一句话给任意 Agent（Codex / Claude Code / 其他）即可安装：
+## 先看这个：我该用哪个 skill？
 
-```text
-请从 https://github.com/Undertone0809/flomo-crud-skill 安装并启用 flomo-web-crud，自动完成所需依赖与配置（包含 hangwin/mcp-chrome 与 chrome-mcp-server），执行最小可用验证（get_windows_and_tabs、chrome_navigate、chrome_read_page），然后把安装路径、配置文件路径和验证结果报告给我。
-```
 
-## What
+| 你的目标                                  | 推荐 skill                 | 为什么                                     |
+| ------------------------------------- | ------------------------ | --------------------------------------- |
+| 查 memo、总结最近在想什么、快速创建或编辑 memo          | `flomo-local-api`        | `mac` 用户默认首选，走本地登录态 + API，速度快很多         |
+| 在真实 flomo Web 页面里操作 live account      | `flomo-web-crud`         | 不依赖官方 API，适合非 `mac` 用户，也适合本地 API 不可用时兜底 |
+| 导出 Markdown、tag 统计、NotebookLM / AI 素材 | `flomo-memo-to-markdown` | 专门做导出与归档，不混入 CRUD 心智                    |
 
-这个 Skill 提供什么：
 
-- 基于网页 UI 的 flomo 自动化（非官方 API）
-- 完整 CRUD：`query/search`、`create/insert`、`edit`、`delete`
-- 默认安全策略：
-  - `edit`（文本检索定位）先列候选再写入
-  - `delete` 永远二次确认
-  - 不落盘保存 memo 正文
-- 搜索支持滚动深扫（默认上限 `50`）
+## 平台推荐
 
-## Why
+- `mac` 用户：默认优先 `flomo-local-api`
+- 非 `mac` 用户：默认优先 `flomo-web-crud`
+- 不管什么平台，只要目标是导出 Markdown：用 `flomo-memo-to-markdown`
 
-为什么要用它：
+## 三个 skill 的边界
 
-- 不依赖 flomo 官方 API
-- 不需要额外 token
-- 直接复用浏览器已登录状态，落地快
-- 适合在 Codex / Claude Code / 类似环境里，把自然语言任务直接转成可执行的 flomo 操作
+### `flomo-local-api`
 
-## How
+- 面向 `mac`
+- 依赖本地 flomo 登录态
+- 负责查询、总结、创建、编辑、tag 复用
+- 不负责 live Web UI 自动化
+- 不负责删除 memo
 
-如何使用（最短路径）：
 
-1. 准备环境  
-   - Chrome 已登录 flomo：`https://v.flomoapp.com/mine`  
-   - Agent 会话可用 Chrome MCP（必须）  
-   - 当前默认使用的 MCP 实现：[hangwin/mcp-chrome](https://github.com/hangwin/mcp-chrome)
 
-2. 检查能力  
-   你的环境至少可调用：  
-   - `get_windows_and_tabs`  
-   - `chrome_navigate`  
-   - `chrome_read_page`  
-   - `chrome_click_element`  
-   - `chrome_javascript`
-
-3. 做最小验证  
-   - `get_windows_and_tabs` 能返回标签页  
-   - `chrome_navigate` 能打开 flomo 页面  
-   - `chrome_read_page` 能读到页面元素
-
-4. 直接给 Agent 下指令  
-   - “查找包含 `周报` 的 flomo memo”  
-   - “新增一条 memo：今天把 README 开源化了”  
-   - “把这条 memo 改成……（replace）”  
-   - “删除这条 memo（确认后执行）”
-
-推荐配置（更稳）：
-
-```toml
-[mcp_servers.chrome-mcp-server]
-enabled = true
-command = "npx"
-args = ["-y", "-p", "mcp-chrome-bridge", "mcp-chrome-stdio"]
-```
-
-补充：
-
-- 建议优先使用 `stdio` 模式
-- 仍需本地安装并启用对应的 Chrome 扩展/桥接组件
-- 修改 MCP 配置后通常需要完全重启客户端
-
----
-
-也可以直接用 Skills CLI 安装：
+安装示例：
 
 ```bash
-npx skills add Undertone0809/flomo-crud-skill --skill flomo-web-crud
+npx skills add Undertone0809/flomo-skills --skill flomo-local-api
 ```
 
-更多细节见：
+### `flomo-web-crud`
 
-- `SKILL.md`
-- `references/safety.md`
-- `references/ui-locators.md`
-- `references/workflows.md`
+- 面向任意平台，尤其是非 `mac`
+- 不依赖 flomo 官方 API
+- 依赖 Chrome MCP 和已登录浏览器
+- 负责 live Web UI 的 query / create / edit / delete
+- 不是默认的高频查询入口，只有在 Web UI 场景或本地 API 不可用时优先使用
+
+
+
+安装示例：
+
+```bash
+npx skills add Undertone0809/flomo-skills --skill flomo-web-crud
+```
+
+### `flomo-memo-to-markdown`
+
+- 面向导出、归档、NotebookLM、长文本 AI 消费
+- 依赖本地 flomo 登录态和 API 读取能力
+- 负责 Markdown 分片、tag 统计、附件处理
+- 不承接“查找并修改一条 memo”这类交互
+
+
+
+安装示例：
+
+```bash
+npx skills add Undertone0809/flomo-skills --skill flomo-memo-to-markdown
+```
+
+## 仓库结构
+
+```text
+.agents/
+  flomo-local-api/
+  flomo-web-crud/
+  flomo-memo-to-markdown/
+```
+
+每个 skill 都自带自己的文档、配置、脚本和 references。这个仓库故意不做 `shared/`，避免把三个用户任务重新耦合成一个抽象平台。
